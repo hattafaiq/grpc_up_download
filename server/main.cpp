@@ -1,4 +1,5 @@
 #include <QCoreApplication>
+#include <QApplication>
 #include "bisa.h"
 #include <grpcpp/grpcpp.h>
 #include <string>
@@ -9,6 +10,7 @@
 #include <memory>
 #include <string>
 
+#include "tampilserver.h"
 #include "absl/flags/flag.h"
 #include "absl/flags/parse.h"
 #include "absl/strings/str_format.h"
@@ -60,15 +62,17 @@ class GreeterServiceImpl final : public Greeter2::Service {
                 std::cout << "size " << i <<":"<< request->size_arr(i) << std::endl;
                 std::cout << "time " << i <<":"<< request->timeepoch(i) << std::endl;
                 std::cout << "tipe " << i <<":"<< request->tipe_data(i) << std::endl;
-                validasi[0].push_back(request->tipe_data(i));
-                validasi[1].push_back(request->timeepoch(i));
-                validasi[2].push_back(request->size_arr(i));
+                validasi[0].push_back(request->tipe_data(i)); //info array tipe data
+                validasi[1].push_back(request->timeepoch(i)); //info array time epoch
+                validasi[2].push_back(request->size_arr(i)); //info array size
             }
         }else{
             qDebug()<<"kiriman data rusak";
         }
     }else if(request->name()=="UPLOAD"){
         std::cout << "UPLOAD Req " << request->name() << std::endl;
+//        QByteArray datanya_adalah = request->datablob();
+//        qDebug()<<datanya_adalah.data() << "|| size:"<<datanya_adalah.size();
         std::string prefix("Cek");
         reply->set_name(prefix);
             //mulai masukin ke database/buffer
@@ -109,9 +113,12 @@ void RunServer(uint16_t port) {
     std::cout << "Server listening on " << server_address << std::endl;
    // grpc::ServerAsyncResponseWriter<EchoResponse> response_writer()
     server->Wait();
+
 }
 
 int main(int argc, char** argv) {
+ // QApplication a(argc, argv);
+  //TampilServer as;
   absl::ParseCommandLine(argc, argv);
   RunServer(absl::GetFlag(FLAGS_port));
   return 0;

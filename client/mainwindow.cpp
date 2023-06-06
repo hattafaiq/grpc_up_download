@@ -80,12 +80,12 @@ class GreeterClient {
    //*ganti mode upload
    //kelar;
     //if(coba.flag_db==1){
-        QString filename = "tes_viro.dbb";
-        QString con_name;
-        con_name = QString("LOC_DB%1").arg(1);
-        db =QSqlDatabase::addDatabase("QSQLITE",con_name);
-        db.setDatabaseName(filename);
-        coba.flag_db=0;
+    QString filename = "tes_viro.dbb";
+    QString con_name;
+    con_name = QString("LOC_DB%1").arg(1);
+    db =QSqlDatabase::addDatabase("QSQLITE",con_name);
+    db.setDatabaseName(filename);
+    coba.flag_db=0;
     //}
     QByteArray buffer_data;
     QByteArray hard;
@@ -104,44 +104,51 @@ class GreeterClient {
         QSqlQuery buka(db);
         QVector<int> data = {1,2,3,4};
         int jumlah = 4;
-        if(siap==OK_Cek || siap==gagal);
+        //if(siap==OK_Cek || siap==gagal);
 
-      //  for(int i=0; i<jumlah; i++){
-          buka.prepare("select * from data_410_tipe where id=:id");
-          buka.bindValue(":id", data[1]);
-          if(!buka.exec()){
-              qDebug()<<"gak buka";
+        for(int i=0; i<jumlah; i++){//loop jumlah data
+        buka.prepare("select * from data_41_tipe where id=:id");
+        buka.bindValue(":id", data[i]);
+        if(!buka.exec()){qDebug()<<"gak buka";}
+        else{while(buka.next()){
+          QByteArray data1 = buka.value("data").toByteArray();
+          array_size_data.push_back(data1.size());
+          buffer_data.push_back(data1);
+          //array_epoc.push_back(buka.value("data_timestamp").toInt());
+          //array_tipe.push_back(410);
+          if(user=="info UPLOAD"){
+              request.add_tipe_data(41);
+              request.add_timeepoch(buka.value("data_timestamp").toInt());
+              request.add_size_arr(data1.size());
           }
-          else{
-              while( buka.next() )
-              {
-                  QByteArray data1 = buka.value("data").toByteArray();
-                  qDebug()<<"data size:"<<data1.size();
-                  array_size_data.push_back(data1.size());
-                  buffer_data.push_back(data1);
-                  //array_epoc.push_back(buka.value("data_timestamp").toInt());
-                  //array_tipe.push_back(410);
-                  if(siap==info_upload){
-                      request.add_tipe_data(410);
-                      request.add_timeepoch(buka.value("data_timestamp").toInt());
-                      request.add_size_arr(data1.size());
-                      std::cout << user << std::endl;
-                  }
-                  if(siap==upload){
-                      std::string stdString(data1.constData(), data1.length());
-                      request.set_datablob(stdString);
-                  }
-              }
-           }
-        }
-        if(siap==info_upload){
+          else if(user=="UPLOAD"){
+              std::string stdString(data1.constData(), data1.length());
+              request.set_datablob(stdString);
+              qDebug()<<"data size:"<<data1.size();
+              //qDebug()<<"---------------------------------->";
+          }
+        }}
+        }//diluar loop
+
+        if(user=="info UPLOAD"){
             request.set_size_all(buffer_data.size());
+            std::cout << user << std::endl;
+            qDebug()<<"size all data:" <<buffer_data.size();
         }
-   // }
+        else if(user=="UPLOAD")
+            std::cout << user << std::endl;
+        else if(user=="Cek")
+            std::cout << user << std::endl;
+        else if(user=="Selesai")
+            std::cout << user << std::endl;
+
+    }//loop dumlah data
    Status status = stub_->SayHello(&context,request ,&reply);
 
     if (status.ok()) {
+       //std::cout << user << std::endl;
        qDebug()<<"ok";
+       qDebug()<<"---------------------------------->";
        coba.flag_disconnect = 0;
       return reply.name();
     } else {
@@ -150,8 +157,6 @@ class GreeterClient {
       coba.flag_disconnect = 1;
       return "RPC failed";
     }
-
-
   }
 
  private:
@@ -168,22 +173,57 @@ void MainWindow::cek_data(int koneksi, int tipe_data, int time_epoch, int size){
     GreeterClient greeter( grpc::CreateCustomChannel (target_str, grpc::InsecureChannelCredentials(), ch_args));
     std::string user("info UPLOAD");
     greeter.SayHello(user);
-    qDebug()<<"cek koneksi:"<<coba.flag_disconnect;
-    std::string user1("UPLOAD");
-    greeter.SayHello(user1);
-    qDebug()<<"cek koneksi:"<<coba.flag_disconnect;
-    std::string user2("Cek");
-    greeter.SayHello(user2);
-    qDebug()<<"cek koneksi:"<<coba.flag_disconnect;
-    std::string user3("Selesai");
-    greeter.SayHello(user3);
-    qDebug()<<"cek koneksi:"<<coba.flag_disconnect;
-
+//    qDebug()<<"cek koneksi:"<<coba.flag_disconnect;
+//    std::string user1("UPLOAD");
+//    greeter.SayHello(user1);
+//    qDebug()<<"cek koneksi:"<<coba.flag_disconnect;
+//    std::string user2("Cek");
+//    greeter.SayHello(user2);
+//    qDebug()<<"cek koneksi:"<<coba.flag_disconnect;
+//    std::string user3("Selesai");
+//    greeter.SayHello(user3);
+//    qDebug()<<"cek koneksi:"<<coba.flag_disconnect;
 }
 
 
 void MainWindow::on_pushButton_clicked()
 {
     cek_data(0,0,0,0);
+}
+
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    std::string target_str = absl::GetFlag(FLAGS_target);
+    grpc::ChannelArguments ch_args;
+    ch_args.SetMaxReceiveMessageSize(-1);
+
+    GreeterClient greeter( grpc::CreateCustomChannel (target_str, grpc::InsecureChannelCredentials(), ch_args));
+    std::string user1("UPLOAD");
+    greeter.SayHello(user1);
+}
+
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    std::string target_str = absl::GetFlag(FLAGS_target);
+    grpc::ChannelArguments ch_args;
+    ch_args.SetMaxReceiveMessageSize(-1);
+
+    GreeterClient greeter( grpc::CreateCustomChannel (target_str, grpc::InsecureChannelCredentials(), ch_args));
+    std::string user2("Cek");
+    greeter.SayHello(user2);
+}
+
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    std::string target_str = absl::GetFlag(FLAGS_target);
+    grpc::ChannelArguments ch_args;
+    ch_args.SetMaxReceiveMessageSize(-1);
+
+    GreeterClient greeter( grpc::CreateCustomChannel (target_str, grpc::InsecureChannelCredentials(), ch_args));
+    std::string user3("Selesai");
+    greeter.SayHello(user3);
 }
 
