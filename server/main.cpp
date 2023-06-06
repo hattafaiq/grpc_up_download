@@ -19,6 +19,17 @@
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/health_check_service_interface.h>
 
+#define FFT_LINES_DISABLE   0
+#define FFT_LINES_50        1
+#define FFT_LINES_100       2
+#define FFT_LINES_200       3
+#define FFT_LINES_400       4
+#define FFT_LINES_800       5
+#define FFT_LINES_1600      6
+#define FFT_LINES_3200      7
+#define FFT_LINES_6400      8
+#define FFT_LINES_12800     9
+
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
@@ -30,6 +41,8 @@ using helloworld::HelloRequest;
 
 ABSL_FLAG(uint16_t, port, 5000, "Server port for the service");
 
+QVector<int> validasi[3];
+
 std::string convertToString(char* a, int size)
 {
     int i;
@@ -38,6 +51,32 @@ std::string convertToString(char* a, int size)
         s = s + a[i];
     }
     return s;
+}
+
+int decode_fft_lines(int setting_lines )
+{
+    if ( setting_lines == FFT_LINES_DISABLE)
+        return 0;
+    else if (setting_lines == FFT_LINES_50)
+        return 50;
+    else if (setting_lines == FFT_LINES_100)
+        return 100;
+    else if (setting_lines == FFT_LINES_200)
+        return 200;
+    else if (setting_lines == FFT_LINES_400)
+        return 400;
+    else if (setting_lines == FFT_LINES_800)
+        return 800;
+    else if (setting_lines == FFT_LINES_1600)
+        return 1600;
+    else if (setting_lines == FFT_LINES_3200)
+        return 3200;
+    else if (setting_lines == FFT_LINES_6400)
+        return 6400;
+    else if (setting_lines == FFT_LINES_12800)
+        return 12800;
+    else
+        return 0;
 }
 
 class GreeterServiceImpl final : public Greeter2::Service {
@@ -49,7 +88,7 @@ class GreeterServiceImpl final : public Greeter2::Service {
     ///
     ///
     ///
-    QVector<int> validasi[3];
+
     if(request->name()=="info UPLOAD"){
         std::cout << "Req " << request->name() << std::endl;
         std::string prefix("UPLOAD");
@@ -71,8 +110,53 @@ class GreeterServiceImpl final : public Greeter2::Service {
         }
     }else if(request->name()=="UPLOAD"){
         std::cout << "UPLOAD Req " << request->name() << std::endl;
-//        QByteArray datanya_adalah = request->datablob();
-//        qDebug()<<datanya_adalah.data() << "|| size:"<<datanya_adalah.size();
+        QByteArray byteArray(request->datablob().c_str(), request->datablob().length());
+        qDebug()<<"bytea: "<<byteArray.size();
+        std::cout << "data ke =" << request->size_all() << std::endl;
+        qDebug()<< "tipe data: "<<validasi[0][0];
+        //qDebug()<< "tipe data: "<<validasi[0][0];
+        //int datake = request->size_all();
+        if((validasi[0][request->size_all()]==41)||
+        (validasi[0][request->size_all()]==42)||
+        (validasi[0][request->size_all()]==43)){
+            //qDebug()<<" masuk data 41 bro";
+            struct t_kom_dat *_tKomDat;
+            struct t_dd_rotat *_tDataRotat;
+            int pjgtRute = sizeof(t_rute);
+            int pjgtSetPar = sizeof(t_setting_param);
+            int pjgKomDat = sizeof (_tKomDat->data);
+            int pjgtDdRot = sizeof(t_dd_rotat);
+            int pjgData;
+            int sizeTotal;
+
+            struct t_setting_param *_tSetParamData;
+            QByteArray dSetPAram = byteArray.mid(pjgtRute,pjgtSetPar);
+            _tSetParamData = (struct t_setting_param *) dSetPAram.data();
+            pjgData = (decode_fft_lines(_tSetParamData->fft_lines)) *4 + (decode_fft_lines(_tSetParamData->fft_lines) *4 *2.56) ; // point *4 + point*4*2.56
+            sizeTotal = pjgtRute + pjgKomDat + pjgData + pjgtDdRot;
+
+            QByteArray dDatRot = byteArray.mid((pjgtRute+pjgKomDat+pjgData),pjgtDdRot);
+            _tDataRotat =(struct t_dd_rotat *) dDatRot.data();
+            qDebug()<<"test setting data: " <<"||fft lines: " << decode_fft_lines(_tSetParamData->fft_lines)<<
+                      "||ovrlp: "<<_tSetParamData->fft_overlap <<
+                      "||fstart: "<<_tSetParamData->freq_start<<
+                      "||fstop: " << _tSetParamData->freq_stop;
+
+            //ini tanpa flag setting param
+            // struct t_dd_rotat *_tDataRotat;
+//            struct t_info_rotat *_inforot;
+//            int pjgtInforotat = sizeof(_inforot);
+//            QByteArray dinforot = byteArray.mid(pjgtRute,pjgtInforotat);
+//            _inforot = (struct t_info_rotat *) dinforot.data();
+//            qDebug()<<"test setting data: " <<"||fft lines: " << _inforot->fft_point<<
+//                      "||ovrlp: "<<_inforot->overlap <<
+//                      "||fstart: "<<_inforot->high_pass<<
+//                      "||fstop: " << _inforot->f_maks;
+        }
+        else{
+            qDebug()<<"bukan rotating";
+        }
+
         std::string prefix("Cek");
         reply->set_name(prefix);
             //mulai masukin ke database/buffer

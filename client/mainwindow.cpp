@@ -17,13 +17,6 @@
 #include "helloworld.grpc.pb.h"
 #include "helloworld.pb.h"
 
-#define gagal 100
-#define OK_Cek 11
-#define upload 1
-#define download 3
-#define info_upload 10
-#define info_download 30
-
 
 using grpc::Channel;
 using grpc::ClientContext;
@@ -93,7 +86,9 @@ class GreeterClient {
     std::vector<int32_t> array_size_data;
     std::vector<int32_t> array_epoc;
     std::vector<int32_t> array_tipe;
-    int siap =info_upload;
+
+    QByteArray data1;
+    QSqlQuery buka(db);
     if(!db.open())
     {
       qDebug()<<"db gak kebukak";
@@ -101,48 +96,42 @@ class GreeterClient {
     }
     else
     {
-        QSqlQuery buka(db);
-        QVector<int> data = {1,2,3,4};
-        int jumlah = 4;
+
+        QVector<int> data = {1,5};
+        int jumlah = 2;
         //if(siap==OK_Cek || siap==gagal);
 
         for(int i=0; i<jumlah; i++){//loop jumlah data
-        buka.prepare("select * from data_41_tipe where id=:id");
-        buka.bindValue(":id", data[i]);
-        if(!buka.exec()){qDebug()<<"gak buka";}
-        else{while(buka.next()){
-          QByteArray data1 = buka.value("data").toByteArray();
-          array_size_data.push_back(data1.size());
-          buffer_data.push_back(data1);
-          //array_epoc.push_back(buka.value("data_timestamp").toInt());
-          //array_tipe.push_back(410);
-          if(user=="info UPLOAD"){
-              request.add_tipe_data(41);
-              request.add_timeepoch(buka.value("data_timestamp").toInt());
-              request.add_size_arr(data1.size());
-          }
-          else if(user=="UPLOAD"){
-              std::string stdString(data1.constData(), data1.length());
-              request.set_datablob(stdString);
-              qDebug()<<"data size:"<<data1.size();
-              //qDebug()<<"---------------------------------->";
-          }
-        }}
-        }//diluar loop
-
+            buka.prepare("select * from data_42_tipe where id=:id");
+            buka.bindValue(":id", data[i]);
+            if(!buka.exec()){qDebug()<<"gak buka";}
+            else{while(buka.next()){
+              data1 = buka.value("data").toByteArray();
+              array_size_data.push_back(data1.size());
+              buffer_data.push_back(data1);
+                }
+              }
+            }//diluar loop
+        }//loop dumlah data
         if(user=="info UPLOAD"){
+            request.add_tipe_data(42);
+            request.add_timeepoch(buka.value("data_timestamp").toInt());
+            request.add_size_arr(data1.size());
             request.set_size_all(buffer_data.size());
             std::cout << user << std::endl;
             qDebug()<<"size all data:" <<buffer_data.size();
         }
-        else if(user=="UPLOAD")
-            std::cout << user << std::endl;
+        else if(user=="UPLOAD"){
+            std::string stdString(data1.constData(), data1.length());
+            request.set_datablob(stdString);
+            qDebug()<<"data size:"<<data1.size();
+            std::cout << user << std::endl;}
         else if(user=="Cek")
             std::cout << user << std::endl;
         else if(user=="Selesai")
             std::cout << user << std::endl;
 
-    }//loop dumlah data
+
    Status status = stub_->SayHello(&context,request ,&reply);
 
     if (status.ok()) {
@@ -226,4 +215,3 @@ void MainWindow::on_pushButton_4_clicked()
     std::string user3("Selesai");
     greeter.SayHello(user3);
 }
-

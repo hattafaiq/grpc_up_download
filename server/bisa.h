@@ -428,6 +428,117 @@ struct t_detil_utama {
     double rated_power;
 };
 
+struct t_info_rotat {
+        float 	peak;				// tertinggi pada domain frekuensi
+        float	overall;			// harga overall pada domain waktu (sesuai dengan RMS, PP atau P)
+        float	f_maks;				// frekuensi saat peak.
+
+        unsigned short keluaran;
+        unsigned short fft_point;  //lengt data // lines parameter
+        unsigned short low_cut;     //f_stop
+        unsigned short high_pass;   //f_start
+        unsigned short averages;
+        unsigned short window;
+        unsigned short PP;
+
+        /* 16 sept 2009, model integrasi
+                1 untuk digital integration
+                2 untuk analog integration (IIR filter)
+        */
+        unsigned short integrasi;
+
+        /* 19 Sept 2009, skala auto / tidak */
+        unsigned short skala;
+
+        /* 20 sept 2009, faktor kalibrasi */
+        float accel_A;
+        float accel_B;
+
+        /* 29 Okt 2009 */
+        unsigned short satuan;		// metrik, inggris
+        unsigned short sat_frek;	// Hz, CPM, RPM
+        unsigned short skala_log;	// log, linear
+        unsigned short cursor;		// satu saja atau harmonik
+        unsigned short screen;		// spektrum saja, + waveform
+
+        /* 31 Okt 2009 */
+        float f_perlines;		// f_perlines sesungguhnya dari sampling rate sesungguhnya
+
+        /* 2 Nov 2009 */
+        short cur_avg;
+        float faktor_default;		// faktor hanning, hamming dll
+        float reff_rpm;
+
+        /* 4 Nov 2009 */
+        float mean;
+        float mean_asli;			// raw data sebelum dikali faktor kalibrasi
+        float f_scaling;			// pengaruh scalling
+
+        /* 22 Mar 2010 */
+        int anal_gain;				// setting analog gain pada LTC1564
+
+        /* 21 Juli 2010 */
+        float f_MA;					// milivolt maksimum
+        float f_MI;
+
+        /* 10 Agt 2010 */
+        unsigned long long 	tim;	/* waktu saat data disimpan, NOTE : ini sering problem antar platform
+                                untuk ARM/Haliza, WIndows 32/64 dan Linux 32/64
+                                pe Sept 2016, diganti ke long long
+
+                                tadinya long
+                                */
+        unsigned char phase;	// 2 = disable, 1 = enable
+        unsigned char kanal;	//  0/1 => 1 kanal, 2 = 2 kanal.
+
+        /* 20 MEI 2013 WARN WARN, mungkin tidak cocok dengan database/sofHaliza */
+        int custom_srate;           // sampling rate custom
+        int overlap;                // maksimum 100 (100 persen overlap)
+
+        char mode_fase;              // 1 = 360 dan 2 = 720
+        char sumber_fase;            // 0 = pickup, 1 = ch1, 2 = ch2
+        char band_fase;
+        char flag_valid;             // valid strukturnya
+        float beda_fase;             // beda fase yang terukur
+
+        char show_kurva_PU;     /* kurva pickup dimunculkan */
+        unsigned int 	dummy;
+        unsigned int 	dummy2;
+
+
+#if 1
+        /* 18 Mei 2011, tentang batas alarm dan batas fault juga bearing */
+        float   alarm;
+        float   fault;
+
+        char    bearing_maker[64];
+        char    bearing_model[64];
+        float   bpfo;
+        float   bpfi;
+        float   ftf;
+        float   bsf;
+#endif
+        /* 27 Okt 2014, di buat 4 versi Vel, Acc, Disp, Volt */
+        //unsigned short keluaran;
+};
+
+struct t_dd_rotat {
+    float freq1, freq2;
+    float amp1, amp2;
+    float beda_fase; //beda fasa dual kanal
+    bool lead_or_lag;
+    float vpp1, vpp2;
+    float vrms1, vrms2;
+    int tipe;           //
+    unsigned int id_data;
+    float fasa1; //beda fasa ch1 dengan PU
+    float fasa2; //beda fasa ch2 dengan PU
+    bool lead_or_lag1; //leading/lagging ch1
+    bool lead_or_lag2; //leading/lagging ch2
+    //ditambhakan dan disesuaikan ke haliza
+    unsigned long long timestamp; //diganti masukkan ke kolom sendiri aja
+
+};
 
 //struct dijadiin char terus jadi string?
 
