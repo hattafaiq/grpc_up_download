@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //cek_data(0, 0, 0, 0);
     this->setMinimumSize(350,350);
     this->setMaximumSize(350,350);
+    //counter=0;
 }
 
 MainWindow::~MainWindow()
@@ -45,7 +46,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
+int counter=0;
 class GreeterClient {
  public:
   GreeterClient(std::shared_ptr<Channel> channel)
@@ -89,55 +90,82 @@ class GreeterClient {
 
     QByteArray data1;
     QSqlQuery buka(db);
+    QVector<int> data = {1,5};
     if(!db.open())
     {
       qDebug()<<"db gak kebukak";
       //return;
     }
     else
-    {
+    {for(int i=0; i<data.size(); i++){//loop jumlah data
 
-        QVector<int> data = {1,5};
-        int jumlah = 2;
-        //if(siap==OK_Cek || siap==gagal);
-
-        for(int i=0; i<jumlah; i++){//loop jumlah data
-            buka.prepare("select * from data_42_tipe where id=:id");
-            buka.bindValue(":id", data[i]);
-            if(!buka.exec()){qDebug()<<"gak buka";}
-            else{while(buka.next()){
-              data1 = buka.value("data").toByteArray();
-              array_size_data.push_back(data1.size());
-              buffer_data.push_back(data1);
-                }
-              }
-            }//diluar loop
-        }//loop dumlah data
         if(user=="info UPLOAD"){
-            request.add_tipe_data(42);
-            request.add_timeepoch(buka.value("data_timestamp").toInt());
-            request.add_size_arr(data1.size());
-            request.set_size_all(buffer_data.size());
-            std::cout << user << std::endl;
-            qDebug()<<"size all data:" <<buffer_data.size();
-        }
+        buka.prepare("select * from data_42_tipe where id=:id");
+        buka.bindValue(":id", data[i]);}
         else if(user=="UPLOAD"){
-            std::string stdString(data1.constData(), data1.length());
-            request.set_datablob(stdString);
-            qDebug()<<"data size:"<<data1.size();
-            std::cout << user << std::endl;}
-        else if(user=="Cek")
-            std::cout << user << std::endl;
-        else if(user=="Selesai")
-            std::cout << user << std::endl;
+        buka.prepare("select * from data_42_tipe where id=:id");
+        buka.bindValue(":id", data[counter]);}
+
+        if(!buka.exec()){qDebug()<<"gak buka";}
+        else{while(buka.next()){
+          data1 = buka.value("data").toByteArray();
+          array_size_data.push_back(data1.size());
+          buffer_data.push_back(data1);
+          //array_tipe.push_back(42);
+          if(user=="info UPLOAD"){
+              request.add_tipe_data(42);
+              request.add_timeepoch(buka.value("data_timestamp").toInt());
+              request.add_size_arr(data1.size());
+              }
+          else if(user=="UPLOAD"){
+              int flag_param = (buka.value("flag_set_param").toInt()==1)?1:0;
+              std::string stdString(data1.constData(), data1.length());
+              request.set_flagparam(flag_param);
+              request.set_datablob(stdString);
+              request.set_size_all(counter);
+              }
+
+            }
+          }
+        }//diluar loop
+    buka.clear();
+    }//loop dumlah data
+    if(user=="info UPLOAD"){
+        request.set_size_all(buffer_data.size());
+        std::cout << user << std::endl;
+        qDebug()<<"size all data:" <<buffer_data.size();
+    }
+    else if(user=="UPLOAD"){
+        //siapkan counter
+//        buka.prepare("select * from data_42_tipe where id=:id");
+//        buka.bindValue(":id", data[counter]);
+//        if(!buka.exec()){qDebug()<<"gak buka";}
+//        else{while(buka.next()){
+//          data1 = buka.value("data").toByteArray();
+//          std::string stdString(data1.constData(), data1.length());
+//          int flag_param = (buka.value("flag_set_param").toInt()==1)?1:0;
+//          request.set_flagparam(flag_param);
+//          request.set_datablob(stdString);
+//          qDebug()<<"kirim data size:"<<data1.size();
+//            }}
+//        std::cout << user << std::endl;
+    }
+    else if(user=="Cek"){
+        if(reply.done_send())//data terkirim
+        counter+=1;
+        request.set_size_all(counter);
+        if(counter>data.size()){
+            qDebug()<<"selesai";
+        }
+        std::cout << user << std::endl;}
+    else if(user=="Selesai")
+        std::cout << user << std::endl;
 
 
    Status status = stub_->SayHello(&context,request ,&reply);
 
     if (status.ok()) {
-       //std::cout << user << std::endl;
-       qDebug()<<"ok";
-       qDebug()<<"---------------------------------->";
+       qDebug()<<"---------------------------------->ok";
        coba.flag_disconnect = 0;
       return reply.name();
     } else {

@@ -117,8 +117,9 @@ class GreeterServiceImpl final : public Greeter2::Service {
         //qDebug()<< "tipe data: "<<validasi[0][0];
         //int datake = request->size_all();
         if((validasi[0][request->size_all()]==41)||
-        (validasi[0][request->size_all()]==42)||
-        (validasi[0][request->size_all()]==43)){
+           (validasi[0][request->size_all()]==42)||
+           (validasi[0][request->size_all()]==43)&&
+           (request->flagparam()==1)){
             //qDebug()<<" masuk data 41 bro";
             struct t_kom_dat *_tKomDat;
             struct t_dd_rotat *_tDataRotat;
@@ -156,15 +157,21 @@ class GreeterServiceImpl final : public Greeter2::Service {
         else{
             qDebug()<<"bukan rotating";
         }
-
+        reply->set_done_send(1);
         std::string prefix("Cek");
         reply->set_name(prefix);
             //mulai masukin ke database/buffer
     }
     else if(request->name()=="Cek"){
         std::cout << "Cek Req " << request->name() << std::endl;
+        if(request->size_all()==validasi[0].size()){
+            qDebug()<<"sudah selesai";
         std::string prefix("Selesai");
-        reply->set_name(prefix);
+        reply->set_name(prefix);}
+        else{
+            std::string prefix("Cek");
+            reply->set_name(prefix);
+        }
             //mulai masukin ke database/buffer
         }
     else if(request->name()=="Selesai"){

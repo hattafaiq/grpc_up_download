@@ -187,6 +187,8 @@ class HelloRequest final :
     kNameFieldNumber = 1,
     kDatablobFieldNumber = 6,
     kSizeAllFieldNumber = 3,
+    kFlagparamFieldNumber = 7,
+    kDoneSendFieldNumber = 8,
   };
   // repeated int32 tipe_data = 2;
   int tipe_data_size() const;
@@ -291,6 +293,24 @@ class HelloRequest final :
   void _internal_set_size_all(int32_t value);
   public:
 
+  // int32 flagparam = 7;
+  void clear_flagparam();
+  int32_t flagparam() const;
+  void set_flagparam(int32_t value);
+  private:
+  int32_t _internal_flagparam() const;
+  void _internal_set_flagparam(int32_t value);
+  public:
+
+  // int32 done_send = 8;
+  void clear_done_send();
+  int32_t done_send() const;
+  void set_done_send(int32_t value);
+  private:
+  int32_t _internal_done_send() const;
+  void _internal_set_done_send(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:helloworld.HelloRequest)
  private:
   class _Internal;
@@ -308,6 +328,8 @@ class HelloRequest final :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr datablob_;
     int32_t size_all_;
+    int32_t flagparam_;
+    int32_t done_send_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -442,6 +464,8 @@ class HelloReply final :
     kNameFieldNumber = 1,
     kDatablobFieldNumber = 6,
     kSizeAllFieldNumber = 3,
+    kFlagparamFieldNumber = 7,
+    kDoneSendFieldNumber = 8,
   };
   // repeated int32 tipe_data = 2;
   int tipe_data_size() const;
@@ -546,6 +570,24 @@ class HelloReply final :
   void _internal_set_size_all(int32_t value);
   public:
 
+  // int32 flagparam = 7;
+  void clear_flagparam();
+  int32_t flagparam() const;
+  void set_flagparam(int32_t value);
+  private:
+  int32_t _internal_flagparam() const;
+  void _internal_set_flagparam(int32_t value);
+  public:
+
+  // int32 done_send = 8;
+  void clear_done_send();
+  int32_t done_send() const;
+  void set_done_send(int32_t value);
+  private:
+  int32_t _internal_done_send() const;
+  void _internal_set_done_send(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:helloworld.HelloReply)
  private:
   class _Internal;
@@ -563,6 +605,8 @@ class HelloReply final :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr datablob_;
     int32_t size_all_;
+    int32_t flagparam_;
+    int32_t done_send_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -840,6 +884,46 @@ inline void HelloRequest::set_allocated_datablob(std::string* datablob) {
   // @@protoc_insertion_point(field_set_allocated:helloworld.HelloRequest.datablob)
 }
 
+// int32 flagparam = 7;
+inline void HelloRequest::clear_flagparam() {
+  _impl_.flagparam_ = 0;
+}
+inline int32_t HelloRequest::_internal_flagparam() const {
+  return _impl_.flagparam_;
+}
+inline int32_t HelloRequest::flagparam() const {
+  // @@protoc_insertion_point(field_get:helloworld.HelloRequest.flagparam)
+  return _internal_flagparam();
+}
+inline void HelloRequest::_internal_set_flagparam(int32_t value) {
+  
+  _impl_.flagparam_ = value;
+}
+inline void HelloRequest::set_flagparam(int32_t value) {
+  _internal_set_flagparam(value);
+  // @@protoc_insertion_point(field_set:helloworld.HelloRequest.flagparam)
+}
+
+// int32 done_send = 8;
+inline void HelloRequest::clear_done_send() {
+  _impl_.done_send_ = 0;
+}
+inline int32_t HelloRequest::_internal_done_send() const {
+  return _impl_.done_send_;
+}
+inline int32_t HelloRequest::done_send() const {
+  // @@protoc_insertion_point(field_get:helloworld.HelloRequest.done_send)
+  return _internal_done_send();
+}
+inline void HelloRequest::_internal_set_done_send(int32_t value) {
+  
+  _impl_.done_send_ = value;
+}
+inline void HelloRequest::set_done_send(int32_t value) {
+  _internal_set_done_send(value);
+  // @@protoc_insertion_point(field_set:helloworld.HelloRequest.done_send)
+}
+
 // -------------------------------------------------------------------
 
 // HelloReply
@@ -1103,6 +1187,46 @@ inline void HelloReply::set_allocated_datablob(std::string* datablob) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:helloworld.HelloReply.datablob)
+}
+
+// int32 flagparam = 7;
+inline void HelloReply::clear_flagparam() {
+  _impl_.flagparam_ = 0;
+}
+inline int32_t HelloReply::_internal_flagparam() const {
+  return _impl_.flagparam_;
+}
+inline int32_t HelloReply::flagparam() const {
+  // @@protoc_insertion_point(field_get:helloworld.HelloReply.flagparam)
+  return _internal_flagparam();
+}
+inline void HelloReply::_internal_set_flagparam(int32_t value) {
+  
+  _impl_.flagparam_ = value;
+}
+inline void HelloReply::set_flagparam(int32_t value) {
+  _internal_set_flagparam(value);
+  // @@protoc_insertion_point(field_set:helloworld.HelloReply.flagparam)
+}
+
+// int32 done_send = 8;
+inline void HelloReply::clear_done_send() {
+  _impl_.done_send_ = 0;
+}
+inline int32_t HelloReply::_internal_done_send() const {
+  return _impl_.done_send_;
+}
+inline int32_t HelloReply::done_send() const {
+  // @@protoc_insertion_point(field_get:helloworld.HelloReply.done_send)
+  return _internal_done_send();
+}
+inline void HelloReply::_internal_set_done_send(int32_t value) {
+  
+  _impl_.done_send_ = value;
+}
+inline void HelloReply::set_done_send(int32_t value) {
+  _internal_set_done_send(value);
+  // @@protoc_insertion_point(field_set:helloworld.HelloReply.done_send)
 }
 
 #ifdef __GNUC__

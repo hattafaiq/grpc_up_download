@@ -15,6 +15,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void cek_data(int koneksi, int tipe_data, int time_epoch, int size);
+    int counter;
 
 private slots:
     void on_pushButton_clicked();

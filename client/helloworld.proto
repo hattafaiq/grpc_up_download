@@ -14,6 +14,8 @@ message HelloRequest {
   repeated int32 size_arr = 4;
   repeated int32 timeEpoch = 5;
   bytes datablob = 6;
+  int32 flagparam = 7;
+  int32 done_send = 8;
 }
 
 message HelloReply {
@@ -23,5 +25,7 @@ message HelloReply {
   repeated int32 size_arr = 4;
   repeated int32 timeEpoch = 5;
   bytes datablob = 6;
+  int32 flagparam = 7;
+  int32 done_send = 8;
 }
 
