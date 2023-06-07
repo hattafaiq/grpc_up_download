@@ -166,8 +166,10 @@ class GreeterServiceImpl final : public Greeter2::Service {
         std::cout << "Cek Req " << request->name() << std::endl;
         if(request->size_all()==validasi[0].size()){
             qDebug()<<"sudah selesai";
-        std::string prefix("Selesai");
-        reply->set_name(prefix);}
+            std::string prefix("Selesai");
+            reply->set_name(prefix);
+            validasi->clear();
+        }
         else{
             std::string prefix("Cek");
             reply->set_name(prefix);
@@ -178,6 +180,7 @@ class GreeterServiceImpl final : public Greeter2::Service {
         std::cout << "Selesai Req " << request->name() << std::endl;
         std::string prefix("Selesai");
         reply->set_name(prefix);
+        validasi->clear();
             //mulai masukin ke database/buffer
         }
     return Status::OK;

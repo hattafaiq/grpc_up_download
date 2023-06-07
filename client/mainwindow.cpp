@@ -154,19 +154,27 @@ class GreeterClient {
         if(reply.done_send())//data terkirim
         counter+=1;
         request.set_size_all(counter);
-        if(counter>data.size()){
-            qDebug()<<"selesai";
+        if(counter>=data.size()){
+            qDebug()<<"pengiriman selesai";
+            request.set_name("Selesai");
+            counter=0;
+            array_size_data.clear();
+            array_epoc.clear();
+            array_tipe.clear();
+
         }
         std::cout << user << std::endl;}
-    else if(user=="Selesai")
-        std::cout << user << std::endl;
+    else if(reply.name()=="Selesai")
+        std::cout << "pesan :" <<user << std::endl;
+
 
 
    Status status = stub_->SayHello(&context,request ,&reply);
 
     if (status.ok()) {
-       qDebug()<<"---------------------------------->ok";
        coba.flag_disconnect = 0;
+       std::cout << "pesan :" <<user << std::endl;
+       qDebug()<<"---------------------------------->ok";
       return reply.name();
     } else {
       std::cout << status.error_code() << ": " << status.error_message()
